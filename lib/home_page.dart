@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spellchecker/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:spellchecker/list_puebi.dart';
 
 import 'custom_text_editing_controller.dart';
-import 'list_english_word.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   final List<String> listErrorTexts = [];
   final List<String> listTexts = [];
   CustomTextEdittingController _controller = CustomTextEdittingController();
-  TextEditingController _controllerUploadFile = TextEditingController();
+  final TextEditingController _controllerUploadFile = TextEditingController();
 
   @override
   void initState() {
@@ -57,6 +56,18 @@ class _HomePageState extends State<HomePage> {
   bool _isWordHasNumberOrBracket(String s) {
     return s.contains(RegExp(r'[0-9\()]'));
   }
+  
+  showAlertDialogExit() {
+    showDialog(context: context, builder: (_){
+      return AlertDialog(
+        title: const Text("Keluar dari aplikasi?"),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Tidak")),
+          TextButton(onPressed: () => SystemNavigator.pop(), child: const Text("Ya"))
+        ],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +78,9 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(left: 16),
           child: Image.asset("assets/icon_app.png", width: 16,),
         ),
+        actions: [
+          IconButton(onPressed: showAlertDialogExit, icon: const Icon(Icons.exit_to_app, color: Colors.white,))
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),

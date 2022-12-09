@@ -1,1 +1,1 @@
-const String titleApp = "Spell Checker";
+const String titleApp = "iDetech";
