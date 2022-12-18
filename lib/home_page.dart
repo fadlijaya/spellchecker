@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spellchecker/list_puebi.dart';
+import 'package:spellchecker/list_basic_word.dart';
 
 import 'custom_text_editing_controller.dart';
 
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       final wordToCheckInLowercase = wordToCheck.toLowerCase();
       if (!listTexts.contains(wordToCheckInLowercase)) {
         listTexts.add(wordToCheckInLowercase);
-        if (!listPuebi.contains(wordToCheckInLowercase)) {
+        if (!listBasicWord.contains(wordToCheckInLowercase)) {
           listErrorTexts.add(wordToCheck);
         }
       }
@@ -105,8 +105,9 @@ class _HomePageState extends State<HomePage> {
               child: TextFormField(
                   controller: _controller,
                   onChanged: _handleOnChange,
-                  minLines: 10,
-                  maxLines: 15,
+                  minLines: 15,
+                  maxLines: 100,
+                  maxLength: 1000,
                   decoration: const InputDecoration(
                       hintText: 'Ketik disini',
                       focusedBorder: OutlineInputBorder(
