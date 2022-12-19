@@ -32,6 +32,9 @@ class SplashScreens extends StatelessWidget {
       navigateRoute: const HomePage(),
       duration: 3000,
       imageSrc: "assets/icon_app.png",
+      imageSize: 120,
+      text: titleApp,
+      textStyle: const TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w600),
       backgroundColor: Colors.blue,
     );
   }
