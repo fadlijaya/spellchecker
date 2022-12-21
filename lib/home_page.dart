@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,13 +20,17 @@ class _HomePageState extends State<HomePage> {
   final List<String> listErrorTexts = [];
   final List<String> listTexts = [];
   CustomTextEdittingController _controller = CustomTextEdittingController();
+  CustomTextEdittingController _controllerPdf = CustomTextEdittingController();
 
   PDFDoc? _pdfDoc;
-  final String _textPdf = "";
+  String _textPdf = "";
+  bool _buttonsEnabled = true;
 
   @override
   void initState() {
     _controller = CustomTextEdittingController(listErrorTexts: listErrorTexts);
+    _controllerPdf =
+        CustomTextEdittingController(listErrorTexts: listErrorTexts);
     super.initState();
   }
 
@@ -67,6 +73,41 @@ class _HomePageState extends State<HomePage> {
       _pdfDoc = await PDFDoc.fromPath(filePickerResult.files.single.path!);
       setState(() {});
     }
+  }
+
+  /*Future _readRandomPage() async {
+    if (_pdfDoc == null) {
+      return;
+    }
+    setState(() {
+      _buttonsEnabled = false;
+    });
+
+    String text =
+        await _pdfDoc!.pageAt(Random().nextInt(_pdfDoc!.length) + 1).text;
+
+    setState(() {
+      _textPdf = text;
+      _buttonsEnabled = true;
+    });
+  }*/
+
+  //membaca seluruh dokumen
+  Future _readWholeDoc() async {
+    if (_pdfDoc == null) {
+      return;
+    }
+    setState(() {
+      _buttonsEnabled = false;
+    });
+
+    String text = await _pdfDoc!.text;
+
+    setState(() {
+      _textPdf = text;
+      _controllerPdf.text = text;
+      _buttonsEnabled = true;
+    });
   }
 
   showAlertDialogExit() {
@@ -113,18 +154,27 @@ class _HomePageState extends State<HomePage> {
         width: 400,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "Deteksi Typo dan Kata Tidak Baku",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+              Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      "Deteksi Typo dan Kata Tidak Baku",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text("Silakan masukkan teks ke dalam kotak di bawah ini!"),
+              Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                        "Silakan masukkan teks ke dalam kotak di bawah ini!"),
+                  ),
+                ],
               ),
               Focus(
                 onFocusChange: (hasFocus) {
@@ -152,41 +202,83 @@ class _HomePageState extends State<HomePage> {
                 child: Text("Atau upload file PDF"),
               ),
               _pdfDoc == null
-              ? ElevatedButton(
-                onPressed: _pickPDFText,
-                child: Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.upload_file),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Text(
-                          "Upload File",
-                          style: TextStyle(color: Colors.white),
+                  ? ElevatedButton(
+                      onPressed: _pickPDFText,
+                      child: Container(
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.upload_file),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Text(
+                                "Upload File",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                style: ButtonStyle(
-                    backgroundColor: const MaterialStatePropertyAll(Colors.blue),
-                    padding: const MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 16, horizontal: 16)),
-                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)))
+                      style: ButtonStyle(
+                          backgroundColor:
+                              const MaterialStatePropertyAll(Colors.blue),
+                          padding: const MaterialStatePropertyAll(
+                              EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 16)),
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24)))),
+                    )
+                  : Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                              "Dokumen Pdf, ${_pdfDoc!.length} halaman \n"),
+                        ),
+                        TextButton(
+                          child: Text(
+                            "Membaca seluruh dokumen",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          onPressed: _buttonsEnabled
+                              ? () {
+                                  _readWholeDoc();
+                                }
+                              : () {},
+                        ),
+                        /*Padding(
+                          child: Text(
+                            _textPdf == "" ? "" : "Text: ",
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                          padding: EdgeInsets.all(15),
+                        ),*/
+                        //Text(_textPdf),
+                        Focus(
+                          onFocusChange: (hasFocus) {
+                            if (!hasFocus) {
+                              _handleSpellCheck(_controllerPdf.text, false);
+                            }
+                          },
+                          child: TextFormField(
+                              controller: _controllerPdf,
+                              onChanged: _handleOnChange,
+                              decoration: const InputDecoration(
+                                  hintText: '',
+                                  )),
+                        ),
+                      ],
                     ),
-                    
-              )
-              : Text("Membuka dokumen Pdf, ${_pdfDoc!.length} halaman \n"),
-               Padding(
-                  child: Text(
-                    _textPdf == "" ? "" : "Text:",
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  padding: EdgeInsets.all(15),
+              /*TextButton(
+                child: Text(
+                  "Read random page",
+                  style: TextStyle(color: Colors.blue),
                 ),
-                Text(_textPdf),
+                onPressed: _buttonsEnabled ? _readRandomPage : () {},
+              ),*/
             ],
           ),
         ),
