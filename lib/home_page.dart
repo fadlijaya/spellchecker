@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf_text/pdf_text.dart';
 
 import 'package:spellchecker/list_basic_word.dart';
+import 'package:spellchecker/pdf_read_page.dart';
 
 import 'custom_text_editing_controller.dart';
 
@@ -29,8 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _controller = CustomTextEdittingController(listErrorTexts: listErrorTexts);
-    _controllerPdf =
-        CustomTextEdittingController(listErrorTexts: listErrorTexts);
+    _controllerPdf = CustomTextEdittingController(listErrorTexts: listErrorTexts);
     super.initState();
   }
 
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  showAlertDialogExit() {
+  /*showAlertDialogExit() {
     showDialog(
         context: context,
         builder: (_) {
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -139,15 +139,15 @@ class _HomePageState extends State<HomePage> {
             "assets/icon_app.png",
             width: 16,
           ),
-        ),
-        actions: [
+        )
+        /*actions: [
           IconButton(
               onPressed: showAlertDialogExit,
               icon: const Icon(
                 Icons.exit_to_app,
                 color: Colors.white,
               ))
-        ],
+        ],*/
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
@@ -191,11 +191,11 @@ class _HomePageState extends State<HomePage> {
                     decoration: const InputDecoration(
                         hintText: 'Ketik disini',
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
+                            borderSide: BorderSide(color: Colors.grey)),
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
+                            borderSide: BorderSide(color: Colors.grey)),
                         disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)))),
+                            borderSide: BorderSide(color: Colors.grey)))),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
               ),
               _pdfDoc == null
                   ? ElevatedButton(
-                      onPressed: _pickPDFText,
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PdfReadPage())),
                       child: Container(
                         width: double.infinity,
                         child: Row(
@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                                   vertical: 16, horizontal: 16)),
                           shape: MaterialStatePropertyAll(
                               RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24)))),
+                                  borderRadius: BorderRadius.circular(8)))),
                     )
                   : Column(
                       children: [
@@ -255,8 +255,8 @@ class _HomePageState extends State<HomePage> {
                             textAlign: TextAlign.center,
                           ),
                           padding: EdgeInsets.all(15),
-                        ),*/
-                        //Text(_textPdf),
+                        ),
+                        Text(_textPdf),*/
                         Focus(
                           onFocusChange: (hasFocus) {
                             if (!hasFocus) {
@@ -266,6 +266,7 @@ class _HomePageState extends State<HomePage> {
                           child: TextFormField(
                               controller: _controllerPdf,
                               onChanged: _handleOnChange,
+                              maxLines: 100,
                               decoration: const InputDecoration(
                                   hintText: '',
                                   )),
