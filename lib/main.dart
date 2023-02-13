@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spellchecker/constants.dart';
+import 'package:spellchecker/constants/constants.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
-import 'home_page.dart';
+import 'pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +19,9 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: const SplashScreens(),
+      routes: {
+        '/homePage': (_) => HomePage()
+      }
     );
   }
 }
@@ -32,10 +35,9 @@ class SplashScreens extends StatelessWidget {
       navigateRoute: const HomePage(),
       duration: 3000,
       imageSrc: "assets/icon_app.png",
-      imageSize: 120,
+      imageSize: 90,
       text: titleApp,
-      textStyle: const TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w600),
-      backgroundColor: Colors.blue,
+      textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
     );
   }
 }
