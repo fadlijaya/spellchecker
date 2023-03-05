@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spellchecker/constants/constants.dart';
+import 'package:spellchecker/pages/view_page.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
 import 'pages/home_page.dart';
@@ -32,7 +33,7 @@ class SplashScreens extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SplashScreenView(
-      navigateRoute: const HomePage(),
+      navigateRoute: ViewPage(),
       duration: 3000,
       imageSrc: "assets/icon_app.png",
       imageSize: 90,
