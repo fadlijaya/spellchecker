@@ -107,7 +107,16 @@ class _ViewPageState extends State<ViewPage> {
                       (item) => Column(
                         children: [
                           if (item == 'assets/welcome.svg')
-                          const Text("Selamat Datang Di Aplikasi iDetech", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Selamat Datang Di Aplikasi iDetech", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: const Text("iDetech merupakan aplikasi yang dapat mendeteksi kesalahan kata pada sebuah dokumen."),
+                              )
+                            ],
+                          ),
                           if (item == 'assets/welcome2.svg')
                           Column(
                             children: [

@@ -16,6 +16,12 @@ dependencies:
   dotted_border: ^2.0.0+3
   flutter_svg: ^1.0.0
   carousel_slider: ^4.2.1
+  syncfusion_flutter_pdf: ^21.2.3
+  path_provider: ^2.0.15
+  pdf: ^3.8.3
+  open_file: ^3.3.0
+  dio: ^5.1.1
+
   cupertino_icons: ^1.0.2
 
 dev_dependencies:

@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_text/pdf_text.dart';
+import 'package:spellchecker/models/pdf_api.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../controllers/custom_text_editing_controller.dart';
 import '../words/list_indonesian_word.dart';
@@ -81,7 +86,8 @@ class _PdfReadPageState extends State<PdfReadPage> {
   @override
   void initState() {
     _pickPDFText();
-    _controllerPdf = CustomTextEdittingController(listErrorTexts: listErrorTexts);
+    _controllerPdf =
+        CustomTextEdittingController(listErrorTexts: listErrorTexts);
     super.initState();
   }
 
@@ -99,44 +105,69 @@ class _PdfReadPageState extends State<PdfReadPage> {
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () => Navigator.popAndPushNamed(context, '/homePage'),
-                      icon: Icon(
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.popAndPushNamed(context, '/homePage'),
+                      child: Icon(
                         Icons.close,
                         color: Colors.blue,
                         size: 24,
                       ),
-                      padding: EdgeInsets.only(left: 8, top: 8, bottom: 24),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/pdf.png",
+                        width: 40,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Text(
+                          _pdfDoc == null
+                              ? ""
+                              : "${_pdfDoc!.length} halaman \n",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Image.asset(
-                      "assets/pdf.png",
-                      width: 40,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12),
+                    ElevatedButton(
+                      onPressed:
+                          _buttonsEnabled ? () => _readWholeDoc() : () {},
                       child: Text(
-                        _pdfDoc == null ? "" : "${_pdfDoc!.length} halaman \n",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, color: Colors.grey),
+                        "Deteksi Dokumen",
+                        style: TextStyle(color: Colors.blue.shade700),
                       ),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                            Colors.blue.shade100,
+                          ),
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)))),
                     ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          final pdfFile = await PdfApi.generateText(_controllerPdf.text);
+                          PdfApi.openFile(pdfFile);
+                        },
+                        child: Text("Download"),
+                        style: ButtonStyle(
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                        ))
                   ],
-                ),
-                TextButton(
-                  child: Text(
-                    "Deteksi Dokumen",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onPressed: _buttonsEnabled
-                      ? () {
-                          _readWholeDoc();
-                        }
-                      : () {},
                 ),
                 /*Padding(
                               child: Text(
@@ -158,11 +189,15 @@ class _PdfReadPageState extends State<PdfReadPage> {
                       onChanged: _handleOnChange,
                       maxLines: 100,
                       style: const TextStyle(fontSize: 14),
-                      textAlign: TextAlign.justify,
+                      textAlign: TextAlign.start,
                       decoration: const InputDecoration(
                         hintText: '',
                       )),
                 ),
+                TextButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.download),
+                    label: Text("Download"))
               ],
             ),
           ),
